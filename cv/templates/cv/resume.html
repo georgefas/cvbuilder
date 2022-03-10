@@ -1,0 +1,175 @@
+{% load static %}  
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js"></script>              
+    <script src="{% static 'js/FileSaver.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/jquery.wordexport.js' %}" type="text/javascript"></script>
+    <script src="{% static 'js/html-docx-js.js' %}" type="text/javascript"></script>
+    <title>Document</title>
+</head>
+
+    
+
+
+
+
+<body>
+     <div id="source-html" class="googoose-wrapper">
+
+        <div style="padding:15%;">
+          
+
+    <p align="center"><span style="font-size: xx-large;"> {{data_dict.name}} </span></p>
+    <p align="center"> {{data_dict.address}} </p>
+    <p align="center"> {{data_dict.phone}} | {{data_dict.email}} </p>
+    
+        <p>&nbsp;</p>
+        <p><strong>EDUCATION</strong></p>
+        <hr>
+    
+      
+    
+        <table style="width: 100%;border:0px;"> 
+        
+            <tbody>
+                <tr>
+                    <td>
+                        <p ><strong> {{data_dict.university_name}} </strong></p>
+    
+                    </td>
+                    <td>
+                        <p style="text-align:right;"> {{data_dict.graduation_city}}</p>
+                    </td>
+                </tr>
+            </tbody>
+            
+        </table>
+      
+
+
+        <div>
+
+            <p><em> {{data_dict.degree_name}} </em> Expected  {{data_dict.graduation_date}} </p>
+            <ul>
+            <li>
+            <p><strong>GPA:</strong> {{data_dict.gpa}}; SAT:{{data_dict.sat}} </p>
+            </li>
+            <li>
+            <p><strong>Honors:</strong> {{data_dict.honors}}</p>
+            </li>
+            <li>
+            <p><strong>Relevant Coursework:</strong> {{data_dict.revelant_coursework}} </p>
+            </li>
+            </ul>
+            <p>&nbsp;</p>
+    
+
+</div>            
+            <p><strong>WORK &amp; LEADERSHIP EXPERIENCE</strong></p>
+            <hr>
+
+            {% for exp in data_dict.works_list %}
+
+           <div>
+
+            <table style="width: 100%;border:0px;">
+                <tr>
+                    <td>
+                        <p><strong> {{exp.company_name}} </strong> </p>
+                    </td>
+                    <td>
+                      <p style="text-align:right;">  <strong>{{exp.city}}, {{exp.country}} </strong></p>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <p><em> {{exp.position_title}}</em></p>
+                    </td>
+                    <td>
+                    <p style="text-align:right;">    {{exp.start_date}} &ndash; {{exp.end_date}} </p>
+                    </td>
+                </tr>
+            </table>
+
+         
+          
+            <ul>
+            <li>
+            <p> {{exp.summary}} </p>
+            </li>
+           
+           </div>
+            {% endfor %}
+            <p>&nbsp;</p>
+            <p><strong>SKILLS, ACTIVITIES &amp; INTERESTS</strong></p>
+            <hr>
+            <p><strong>Languages:</strong> {{data_dict.languages}}  </p>
+          
+            <p><strong>Certifications &amp; Training</strong>: {{data_dict.certifications}}  </p>
+            <p><strong>Activities:</strong> {{data_dict.activities}} </p>
+            <p><strong>Interests:</strong> {{data_dict.interests}} </p>
+            <p>&nbsp;</p>
+        </div>
+     
+        </div>
+     
+       
+</body>
+
+<script>
+
+    jQuery(document).ready(function($) {
+
+    $('.word-export').click(function(){        
+
+        $('.googoose-wrapper').contents.wordExport();
+    });
+});
+</script>
+<script>
+  /* function downloadInnerHtml(filename, elId) {
+        var elHtml = document.getElementById(elId).innerHTML;
+        var link = document.createElement('a');
+        link.setAttribute('download', filename);   
+        link.setAttribute('href', 'data:' + 'text/docx' + ';charset=utf-8,' + encodeURIComponent(elHtml));
+        link.click(); 
+       }
+       var fileName =  'resume.docx'; // You can use the .txt extension if you want
+       downloadInnerHtml(fileName, 'exportContent');
+       */
+
+       function exportNote(){
+        var filename = 'note.html'
+        var htmlDoc = document.getElementById('exportContent').innerHTML;
+        var converted = htmlDocx.asBlob(htmlDoc); 
+        console.log(converted);       
+        saveAs(converted, "notes.docx");
+     }
+</script>
+<script>
+    function exportHTML(){
+       var header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' "+
+            "xmlns:w='urn:schemas-microsoft-com:office:word' "+
+            "xmlns='http://www.w3.org/TR/REC-html40'>"+
+            "<head><meta charset='utf-8'><title>Export HTML to Word Document with JavaScript</title></head><body>";
+       var footer = "</body></html>";
+       var sourceHTML = header+document.getElementById("source-html").innerHTML+footer;
+        
+       var source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(sourceHTML);
+       var fileDownload = document.createElement("a");
+       document.body.appendChild(fileDownload);
+       fileDownload.href = source;
+       fileDownload.download = 'document.doc';
+       fileDownload.click();
+       document.body.removeChild(fileDownload);
+    }
+</script>
+
+
+
+</html>

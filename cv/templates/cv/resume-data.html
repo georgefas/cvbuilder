@@ -1,0 +1,495 @@
+{% extends 'cv/base.html' %}
+{% load static %}
+
+{% block title %}
+
+<title> Resume </title>
+
+{% endblock %}
+
+{% block content %}
+<style>
+    .main{
+        
+opacity: 0.8;
+background-size: 10px 10px;
+background-image: repeating-linear-gradient(45deg, #c5c7e7 0, #b3b6ee 1px, #e5e5f7 0, #e5e5f7 50%);
+    }
+</style>
+<head>
+
+    <script src="https://unpkg.com/primevue@^3/core/core.min.js"></script>
+    <script src="https://unpkg.com/primevue@^3/tabview/tabview.min.js"></script>
+    <script src="https://unpkg.com/primevue@^3/tabpanel/tabpanel.min.js"></script>
+    <script src="https://unpkg.com/primevue@^3/calendar/calendar.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.13.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+    <script src="https://code.jquery.com/ui/1.13.1/jquery-ui.js"></script>
+    <script src="{% static 'js/jquery.redirect.js' %}" type="text/javascript"></script>
+    
+</head>
+
+
+<div id="cvbuilder" class="h-auto m-auto main min-h-screen bg-gradient-to-r from-gray-500 to-indigo-600 font-sans ">
+
+
+    <div class="h-auto  min-h-screen flex justify-center items-center ">
+        <div class="container  rounded shadow-lg m-20 w-2/3  bg-white p-5">
+            <h1 class="text-3xl font-bold text-center my-6"> My Financial CV </h1>
+            <hr>
+            <p-dialog v-model:visible="display" :breakpoints="{'960px': '75vw'}" :style="{width: '50vw'}" :closable="true" 
+                header="Work & Leadership Experience ">
+
+                <div class="flex flex-col w-full">
+                    <label class="my-2">Company Name</label>
+                    <input type="text" class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                        placeholder="Eg: ABQ Media " v-model="data_dict.work_experience.company_name" required />
+                    <label class="my-2">Position Title</label>
+                    <input type="text" class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                        placeholder="Eg: Marketing Analyst" v-model="data_dict.work_experience.position_title" name=""
+                        id="" required />
+                    <label class="my-2">City</label>
+                    <input type="text" class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                        placeholder="Eg: New York" v-model="data_dict.work_experience.city" name="" id="" />
+                    <label class="my-2">State</label>
+                    <input type="text" class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                        placeholder="Eg: NY" v-model="data_dict.work_experience.country" name="" id="" />
+                    <label class="my-2">Work Duration</label>
+                    <div class="flex flex-col md:flex-row gap-4">
+
+                        <div>
+                            <label class="my-2" for="">Start Date </label>
+                            <input type="month"  placeholder="02-02-2021"  class="outline-none border p-2 rounded focus:ring" v-model="data_dict.work_experience.start_date" name="" id=""/>
+                            <!-- <p-calendar :value="data_dict.work_experience.start_date" view="month" class="h-10"
+                                dateFormat="mm/yy" v-model="data_dict.work_experience.start_date" /> -->
+
+                        </div>
+                        <div>
+                            <label class="my-2">End Date </label>
+                            <!-- <p-calendar :value="data_dict.work_experience.end_date" class="h-10"
+                                v-model="data_dict.work_experience.end_date" view="month" dateFormat="mm/yy" /> -->
+                                <input type="month"  placeholder="02-02-2021"  class="outline-none border p-2 rounded focus:ring" v-model="data_dict.work_experience.end_date" name="" id=""/>
+
+                        </div>
+
+                    </div>
+                    <label class="my-2" for="">Work Summary </label>
+                    <textarea class="outline-none border rounded focus:ring w-6/7 p-2"
+                        v-model="data_dict.work_experience.summary" placeholder="
+              • Found that ROI could be improved by 25% by purchasing advertising directly from relevant websites; recommendations helped win 2 referral clients for firm
+              • Made recommendation to reduce by 20% average spend required to win new clients by eliminating less qualified prospects near beginning of sales process 
+              • Explain fundamentals of online marketing to clients and encouraged them to invest in additional services with firm; top client later increased campaign budget by $1,000 per month
+                " id="" maxlength="500" cols="30" rows="10"></textarea>
+                </div>
+
+                <div class="flex justify-end mt-4 gap-4">
+                    <button @click="toggleDisplay" class="px-3 py-1 rounded bg-red-500 text-white">
+                        Cancel
+                    </button>
+                    <button @click="add_work()" class="px-3 py-1 rounded bg-green-700 text-white">
+                        Add
+                    </button>
+                </div>
+
+
+            </p-dialog>
+
+            <div class="flex justify-center">
+
+                <div class="flex flex-wrap justify-center" id="tabs-id">
+                    <div class="w-full">
+                        <ul class="flex mb-0 list-none flex-wrap pt-3 pb-4 flex-row">
+                            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center cursor-pointer ">
+                                <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-white bg-blue-600"
+                                    onclick="changeAtiveTab(event,'tab-info')">
+                                    <i class="fas fa-space-shuttle text-base mr-1"></i> Personal Info
+                                </a>
+                            </li>
+                            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center cursor-pointer">
+                                <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-blue-600 bg-white"
+                                    onclick="changeAtiveTab(event,'tab-education')">
+                                    <i class="fas fa-cog text-base mr-1"></i> Education
+                                </a>
+                            </li>
+                            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center cursor-pointer">
+                                <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-blue-600 bg-white"
+                                    onclick="changeAtiveTab(event,'tab-experience')">
+                                    <i class="fas fa-briefcase text-base mr-1"></i> Work & Leadership Experience
+                                </a>
+                            </li>
+                            <li class="-mb-px mr-2 last:mr-0 flex-auto text-center cursor-pointer">
+                                <a class="text-xs font-bold uppercase px-5 py-3 shadow-lg rounded block leading-normal text-blue-600 bg-white"
+                                    onclick="changeAtiveTab(event,'tab-interests')">
+                                    <i class="fas fa-briefcase text-base mr-1"></i> Skills, Activities & Interests
+                                </a>
+                            </li>
+                        </ul>
+                        <div class="relative flex flex-col min-w-0 break-words bg-white w-full mb-6 shadow-lg rounded">
+                            <div class="px-4 py-5 flex-auto">
+                                <div class="tab-content tab-space">
+                                    <div class="block" id="tab-info" class="p-5">
+
+                                        <div class="p-4 flex flex-col gap-2">
+
+                                            <label>Name</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Bud Fox" v-model="data_dict.name" name="" id=""
+                                                required />
+                                            <label>Email</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: bud.fox@gmail.com" v-model="data_dict.email" name=""
+                                                id="" required />
+                                            <label>Address</label>
+                                            <textarea type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: 555 Nothing Road, Chicago, IL 60607"
+                                                v-model="data_dict.address" name="" id="" required></textarea>
+                                            <label>Phone</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: 555-555-5555" v-model="data_dict.phone" name="" id=""
+                                                required />
+                                        </div>
+
+
+                                    </div>
+                                    <div class="hidden" id="tab-education" class="p-5">
+                                        <div class="flex flex-col gap-4">
+                                            <label>University Name</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: University of Illinois at Chicago"
+                                                v-model="data_dict.university_name" name="" id="" />
+                                            <label>Degree Name</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Bachelor of Arts in Economics; Minor in Mathematics"
+                                                v-model="data_dict.degree_name" name="" id="" />
+
+                                            <label>Graduation City & State</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Chicago, IL" v-model="data_dict.graduation_city"
+                                                name="" id="" />
+                                          
+                                                <div class="flex items-center align-center  gap-2">
+                                                <label>Graduation Date : [[data_dict.graduation_date]]</label>
+
+                                                <!-- <p-calendar showIcon="false" class="h-10"
+                                                    v-model="data_dict.graduation_date" view="month"
+                                                    dateFormat="mm/yy" /> -->
+                                                  
+                                                   <input type="month"  placeholder="02-02-2021"  class="outline-none border p-2 rounded focus:ring" v-model="data_dict.graduation_date" name="" id=""/>
+                                            </div>
+
+                                            <div class="flex gap-4 my-2">
+                                                <div class="flex gap-2 align-center">
+                                                    <label class="mt-1">Grade </label>
+                                                    <input type="text"
+                                                        class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                        placeholder="Eg: A+" v-model="data_dict.gpa" name=""
+                                                         />
+                                                </div>
+                                                
+                                            </div>
+                                            <label>Honors</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Dean’s List; Athletic Scholarship"
+                                                v-model="data_dict.honors" name="" id="" />
+                                            <label>Relevant Coursework</label>
+                                            <textarea type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Corporate Valuation; Investment Analysis; Fixed Income Investments; Financial Statement Analysis; Options Pricing; Portfolio Theory"
+                                                v-model="data_dict.revelant_coursework" name="" id=""></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="hidden" id="tab-experience" class="flex justify-center ">
+                                        <div class="flex justify-center">
+                                            <button :onclick="toggleDisplay"
+                                                class="px-2 py-1 flex gap-2 items-center bg-blue-600 text-white rounded">
+                                                <p class="ml-2">Add Work Experience</p> <svg
+                                                    xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mx-1 inline-block"
+                                                    fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                                        stroke-width="3" d="M12 4v16m8-8H4" />
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div id="workexperience" v-for="work_exp in data_dict.works_list"
+                                            :key="work_exp"
+                                            class="w-5/6 p-10 shadow m-10 my-5 flex flex-col justify-center">
+
+                                            <div class="flex flex-col justify-center w-full">
+                                                <label class="my-2">Company Name</label>
+
+                                                <input type="text"
+                                                    class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                    placeholder="Eg: Fluent in Spanish (written and spoken); Conversational proficiency in German"
+                                                    v-model="work_exp.company_name" />
+                                                <label class="my-2">Position Title</label>
+                                                <input type="text"
+                                                    class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                    placeholder="Eg: Officer in Alpha Kappa Gamma Fraternity; Volunteer at Local Veterans’ Hospital"
+                                                    v-model="work_exp.position_title" name="" id="" />
+                                                <label class="my-2">City</label>
+                                                <input type="text"
+                                                    class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                    placeholder="Eg: Series 7 and 63 Licenses; CFA Level I Candidate (December 20XX)"
+                                                    v-model="work_exp.city" name="" id="" />
+                                                <label class="my-2">Country</label>
+                                                <input type="text"
+                                                    class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                    placeholder="Eg: Shark cage diving; Adventure travel; Professional poker (placed in national competitions)"
+                                                    v-model="work_exp.country" name="" id="" />
+                                                <label class="my-2">Work Duration</label>
+                                                <div class="flex gap-4">
+
+                                                    <div>
+                                                        <label class="my-2" for="">Start Date </label>
+                                                        <input  type="month"  placeholder="02-02-2021"  class="outline-none border p-2 rounded focus:ring" v-model="work_exp.start_date" value="'work_exp.start_date" name="" id=""/>
+                                                     
+
+                                                    </div>
+                                                    <div>
+                                                        <label class="my-2">End Date </label>
+                                                        <input type="month" class="outline-none border p-2 rounded focus:ring" v-model="work_exp.end_date" value="'work_exp.end_date" name="" id=""/>
+                                                       
+
+                                                    </div>
+
+                                                </div>
+                                                <label class="my-2" for="">Work Summary </label>
+                                                <textarea class="outline-none p-2 rounded border focus:ring w-6/7 "
+                                                    v-model="work_exp.summary" id="" cols="30" rows="10"></textarea>
+                                            </div>
+
+
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="hidden" id="tab-interests"  class="p-5">
+                                        <div class="flex flex-col gap-2">
+                                            <label>Languages</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Fluent in Spanish (written and spoken); Conversational proficiency in German"
+                                                v-model="data_dict.languages" name="" id="" />
+                                            <label>Activities</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Officer in Alpha Kappa Gamma Fraternity; Volunteer at Local Veterans’ Hospital"
+                                                v-model="data_dict.activities" name="" id="" />
+                                            <label>Certifications</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Series 7 and 63 Licenses; CFA Level I Candidate (December 20XX)"
+                                                v-model="data_dict.certifications" name="" id="" />
+                                            <label>Interests</label>
+                                            <input type="text"
+                                                class="form-input px-4 py-1 rounded border focus:ring outline-none"
+                                                placeholder="Eg: Shark cage diving; Adventure travel; Professional poker (placed in national competitions)"
+                                                v-model="data_dict.interests" name="" id="" />
+
+                                        </div>
+                                        <div   class="my-3 flex gap-4 justify-end">
+                                            <button :onclick="processData"
+                                                class="transition duration-400 ease-in-out px-3 py-1 items-end focus:ring bg-blue-600 text-white rounded">
+                                                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                                  </svg>  Download PDF Resume
+                                            </button>
+                                            <button :onclick="processDataDoc" class="transition duration-400 ease-in-out px-3 py-1 items-end focus:ring bg-blue-600 text-white rounded">  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 inline-block" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                                              </svg> Get Docx </button>
+                                           
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+
+{% endblock %}
+
+{% block scripts %}
+<script type="text/javascript">
+    function changeAtiveTab(event, tabID) {
+        let element = event.target;
+        while (element.nodeName !== "A") {
+            element = element.parentNode;
+        }
+        ulElement = element.parentNode.parentNode;
+        aElements = ulElement.querySelectorAll("li > a");
+        tabContents = document.getElementById("tabs-id").querySelectorAll(".tab-content > div");
+        for (let i = 0; i < aElements.length; i++) {
+            aElements[i].classList.remove("text-white");
+            aElements[i].classList.remove("bg-blue-600");
+            aElements[i].classList.add("text-blue-600");
+            aElements[i].classList.add("bg-white");
+            tabContents[i].classList.add("hidden");
+            tabContents[i].classList.remove("block");
+        }
+        element.classList.remove("text-blue-600");
+        element.classList.remove("bg-white");
+        element.classList.add("text-white");
+        element.classList.add("bg-blue-600");
+        document.getElementById(tabID).classList.remove("hidden");
+        document.getElementById(tabID).classList.add("block");
+    }
+</script>
+
+
+
+<script>
+    const { createApp, ref } = Vue;
+
+    const App = {
+        el: '#cvbuilder',
+        delimiters: ['[[', ']]'],
+        setup() {
+
+            const name = ref(null)
+            const display = ref(null);
+            var event = ref(null);
+            var event_name = ref(null);
+            var volunteers = ref([]);
+            var hasVolunteers = false;
+            var data_dict = {
+                name: "",
+                email: "",
+                address: "",
+                phone: "",
+                languages: "",
+
+                university_name: "",
+                graduation_city: "",
+                degree_name: "",
+                graduation_date: null,
+                gpa: "",
+                sat: "",
+                honors: "",
+                revelant_coursework: "",
+
+                activities: "",
+                certifications: "",
+                interests: "",
+                work_experience: {
+                    company_name: "",
+                    position_title: "",
+                    city: "",
+                    country: "",
+                    start_date: null,
+                    end_date: null,
+                    summary: "",
+
+                },
+                works_list: [],
+
+            }
+
+           
+            return { name, event, volunteers, event_name, display, data_dict };
+
+
+        },
+        mounted() {
+            this.display = false;
+        },
+
+        components: {
+
+            'p-dialog': primevue.dialog,
+            'p-tabview': primevue.tabview,
+            'p-tabpanel': primevue.tabpanel,
+            'p-calendar': primevue.calendar,
+
+
+        },
+        methods: {
+            toggleDisplay() {
+                this.display = !this.display;
+            },
+
+            add_work() {
+
+
+                this.data_dict.works_list.push(this.data_dict.work_experience)
+
+                this.data_dict.work_experience = {
+                    company_name: "",
+                    position_title: "",
+                    city: "",
+                    country: "",
+                    start_date: null,
+                    end_date: null,
+                    summary: "",
+
+                }
+                console.log(this.data_dict.works_list)
+                this.toggleDisplay()
+            },
+
+            processData() {
+                data = {
+                    'data_dict': this.data_dict,
+
+                }
+
+                axios.post('/resume/resumepdf/', data)
+                    .then(response => {
+                        console.log(response)
+                        var base64Str = Buffer.from(response).toString('base64');
+                        base64.base64Decode(base64Str, "file.pdf");
+                        //window.location.href = "/cv"
+                    })
+                    .catch(err => console.log(err))
+
+
+            },
+           
+            processDataDoc() {
+                data =  {
+                    'data_dict': this.data_dict,
+
+                }
+
+                
+                window.location.href = "/resume/docx/"+JSON.stringify(data) + "/";
+               
+                  
+
+
+            }
+
+        }
+
+
+    }
+
+    createApp(App).use(primevue.config.default).mount("#cvbuilder");
+
+</script>
+
+
+{% endblock %}

@@ -1,0 +1,84 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <link rel="shortcut icon" href="{%  static 'img/favicon.ico' %}">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+       {% block title %} {% endblock %}
+       
+             
+    <link rel="stylesheet" href="{% static 'css/tailwind-min.css' %}" />
+    <link rel="stylesheet" href="{% static 'css/tailwind.css' %}" /> 
+
+    <link href="{% static 'css/primevue-lara.css' %}" rel="stylesheet">
+    <link href="{% static 'css/primevue-min.css' %}" rel="stylesheet"> 
+   
+
+    <script src="{% static 'js/primevuecoremin.js' %}"></script> 
+    
+    <script src="{% static 'js/vue.global.prod.js' %} " type="text/javascript"></script>
+    {% comment %} <script src="{% static 'js/vue3.js' %}" type="text/javascript"></script>  {% endcomment %}
+    <script src="{% static 'js/axios.js' %}" type="text/javascript"></script>
+    
+    </head>
+
+    <style>
+        
+    </style>
+    
+
+<body>
+   
+
+
+
+<section class="h-screen w-screen m-0">
+
+
+    <div class="mx-auto flex bg-blue-500 py-5 px-3 justify-between" >
+        <a href="{% url 'home' %}" class="text-white text-xl font-bold">
+            My Financial CV
+        </a>
+        <div class="flex space-x-10">
+            <a href="{% url 'home' %}" class="transition duration-500 ease-in-out space-x-10  text-white hover:text-black"> Home </a>
+           
+        </div>
+       </div>
+{% block content %}
+{% endblock %}
+<footer class="flex h-auto mb-0 w-full bg-gray-900 gap-10">
+    <div class="p-10">
+        <h1 class="text-xl text-white font-bold"> My Financial CV</h1>
+    </div>
+    <div class="p-10">
+       <ul class="list-none flex flex-col gap-4">
+           <li>  <a href="{% url 'home' %}" class="transition duration-500 ease-in-out text-sm md:text-md space-x-10  text-white hover:text-blue-500"> Home </a>
+             </li>
+           <li> <a href="#" class="transition duration-500 ease-in-out text-sm md:text-md space-x-10 text-white hover:text-blue-500"> About </a> </li>
+           <li> <a href="{% url 'cvdata' %}" class="md:hidden  transition duration-500 ease-in-out space-x-10 text-sm text-white hover:text-blue-500"> Enter Manually </a> </li>
+           <li>  <a href="{% url 'resume_upload' %}" class="md:hidden transition duration-500 ease-in-out space-x-10 text-sm  text-white hover:text-blue-500"> Upload Old Resume </a></li>
+        </ul>
+    </div>
+    <div class="p-10">
+        <ul class="list-none hidden md:flex md:flex-col md:gap-4">
+            <li> <a href="{% url 'cvdata' %}" class=" transition duration-500 md:ease-in-out md:space-x-10 md:text-white hover:text-blue-500"> Enter Manually </a> </li>
+            <li>  <a href="{% url 'resume_upload' %}" class=" transition :duration-500 md:ease-in-out md:space-x-10  md:text-white hover:text-blue-500"> Upload Old Resume </a></li>
+           
+        </ul>
+     </div>
+    
+    </footer>
+
+</section>
+
+
+
+
+{% block scripts %}
+{% endblock %}
+
+
+</body>
+</html>
